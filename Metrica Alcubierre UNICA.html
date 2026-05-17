@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metrica di Alcubierre — Cimmino Matteo</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&family=Exo+2:ital,wght@0,100;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --neon-blue:#00d4ff;
+  --neon-pink:#ff2d78;
+  --neon-green:#39ff14;
+  --neon-purple:#bf5fff;
+  --neon-orange:#ff8c00;
+  --bg:#000008;
+  --text:#c8d8e8;
+  --dim:#4a6070;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Exo 2',sans-serif;
+  overflow-x:hidden;
+  cursor:crosshair;
+}
+
+/* STARS BG */
+#stars-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 40px;
+  background:rgba(0,0,8,0.7);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(0,212,255,0.15);
+}
+.nav-logo{
+  font-family:'Share Tech Mono',monospace;
+  font-size:13px;
+  color:var(--neon-blue);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.nav-links{display:flex;gap:28px;}
+.nav-links a{
+  font-family:'Rajdhani',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--dim);
+  text-decoration:none;
+  transition:color 0.3s;
+}
+.nav-links a:hover{color:var(--neon-blue);}
+
+/* SECTIONS */
+section{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:120px 60px 80px;
+}
+
+/* HERO */
+#hero{
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  padding:0 80px;
+}
+.hero-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:12px;
+  letter-spacing:4px;
+  color:var(--neon-blue);
+  text-transform:uppercase;
+  margin-bottom:24px;
+  opacity:0;
+  animation:fadeUp 1s 0.3s forwards;
+}
+.hero-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(52px,8vw,110px);
+  font-weight:700;
+  line-height:0.95;
+  letter-spacing:-1px;
+  margin-bottom:12px;
+  opacity:0;
+  animation:fadeUp 1s 0.6s forwards;
+}
+.hero-title .line1{color:#fff;}
+.hero-title .line2{
+  color:transparent;
+  -webkit-text-stroke:1px var(--neon-blue);
+  display:block;
+}
+.hero-subtitle{
+  font-family:'Exo 2',sans-serif;
+  font-size:clamp(16px,2vw,22px);
+  font-weight:100;
+  font-style:italic;
+  color:var(--dim);
+  max-width:560px;
+  line-height:1.6;
+  margin-bottom:48px;
+  opacity:0;
+  animation:fadeUp 1s 0.9s forwards;
+}
+.hero-question{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(20px,3vw,32px);
+  font-weight:600;
+  color:var(--neon-blue);
+  margin-bottom:60px;
+  opacity:0;
+  animation:fadeUp 1s 1.1s forwards;
+}
+.hero-question span{color:var(--neon-pink);}
+.scroll-hint{
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  letter-spacing:3px;
+  color:var(--dim);
+  text-transform:uppercase;
+  opacity:0;
+  animation:fadeUp 1s 1.4s forwards;
+  display:flex;align-items:center;gap:12px;
+}
+.scroll-hint::after{
+  content:'';display:block;width:40px;height:1px;
+  background:var(--dim);
+  animation:pulse 2s infinite;
+}
+#hero-canvas{
+  position:absolute;right:0;top:0;width:55%;height:100%;
+  opacity:0;animation:fadeIn 2s 0.5s forwards;
+}
+
+/* LAYOUT 2-COL */
+.section-inner{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+  align-items:center;
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+}
+.section-inner.reverse{direction:rtl;}
+.section-inner.reverse > *{direction:ltr;}
+
+.text-block{max-width:520px;}
+.section-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  letter-spacing:4px;
+  color:var(--neon-pink);
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+.section-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(32px,4vw,52px);
+  font-weight:700;
+  line-height:1.05;
+  color:#fff;
+  margin-bottom:24px;
+}
+.section-title em{
+  font-style:normal;
+  color:var(--neon-blue);
+}
+.section-body{
+  font-size:16px;
+  font-weight:300;
+  line-height:1.8;
+  color:#8a9bb0;
+  margin-bottom:20px;
+}
+.section-body strong{color:var(--text);font-weight:600;}
+.highlight-box{
+  border-left:2px solid var(--neon-blue);
+  padding:16px 20px;
+  background:rgba(0,212,255,0.04);
+  margin:24px 0;
+  font-family:'Share Tech Mono',monospace;
+  font-size:13px;
+  color:var(--neon-blue);
+  line-height:1.7;
+}
+.formula-box{
+  border:1px solid rgba(191,95,255,0.3);
+  padding:20px 24px;
+  background:rgba(191,95,255,0.04);
+  margin:24px 0;
+  font-family:'Share Tech Mono',monospace;
+  font-size:14px;
+  color:var(--neon-purple);
+  line-height:2;
+  border-radius:4px;
+}
+.formula-box .formula-label{
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--dim);
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+
+canvas.anim{
+  width:100%;
+  border:1px solid rgba(0,212,255,0.1);
+  border-radius:4px;
+  display:block;
+}
+
+/* SLIDER CONTROLS */
+.controls{margin-top:20px;}
+.ctrl{
+  display:flex;align-items:center;gap:12px;margin-bottom:12px;
+}
+.ctrl label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--dim);
+  min-width:160px;
+  text-transform:uppercase;
+}
+.ctrl input[type=range]{
+  flex:1;
+  -webkit-appearance:none;
+  height:2px;
+  background:rgba(0,212,255,0.2);
+  outline:none;
+  border-radius:2px;
+}
+.ctrl input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--neon-blue);
+  cursor:pointer;
+  box-shadow:0 0 8px var(--neon-blue);
+}
+.ctrl .val{
+  font-family:'Share Tech Mono',monospace;
+  font-size:12px;
+  color:var(--neon-blue);
+  min-width:40px;
+  text-align:right;
+}
+
+/* WARNING BOX */
+.warning-box{
+  border:1px solid rgba(255,45,120,0.4);
+  padding:20px 24px;
+  background:rgba(255,45,120,0.04);
+  margin:24px 0;
+  border-radius:4px;
+}
+.warning-box .w-title{
+  font-family:'Rajdhani',sans-serif;
+  font-weight:700;
+  font-size:16px;
+  color:var(--neon-pink);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.warning-box p{
+  font-size:14px;
+  color:#8a9bb0;
+  line-height:1.7;
+}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:1;
+  padding:80px 80px 60px;
+  border-top:1px solid rgba(0,212,255,0.1);
+  text-align:center;
+}
+.footer-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(28px,5vw,64px);
+  font-weight:700;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(0,212,255,0.4);
+  margin-bottom:24px;
+  line-height:1.1;
+}
+.footer-body{
+  font-size:16px;
+  font-weight:300;
+  font-style:italic;
+  color:var(--dim);
+  max-width:600px;
+  margin:0 auto 48px;
+  line-height:1.8;
+}
+.footer-credits{
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  letter-spacing:3px;
+  color:rgba(74,96,112,0.6);
+  text-transform:uppercase;
+}
+.footer-credits span{color:var(--neon-blue);}
+
+/* DIVIDER */
+.divider{
+  position:relative;z-index:1;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,212,255,0.2),transparent);
+  margin:0 80px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeIn{
+  from{opacity:0;}to{opacity:1;}
+}
+@keyframes pulse{
+  0%,100%{opacity:0.3;}50%{opacity:1;}
+}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s,transform 0.8s;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* SECTION NUMBERS */
+.sec-num{
+  font-family:'Share Tech Mono',monospace;
+  font-size:120px;
+  font-weight:400;
+  color:rgba(0,212,255,0.04);
+  position:absolute;
+  top:60px;right:40px;
+  line-height:1;
+  pointer-events:none;
+  user-select:none;
+}
+
+@media(max-width:900px){
+  .section-inner{grid-template-columns:1fr;}
+  #hero{padding:100px 30px 60px;}
+  section{padding:100px 30px 60px;}
+  #hero-canvas{display:none;}
+  .sec-num{font-size:60px;}
+  nav{padding:12px 20px;}
+  .nav-links{gap:16px;}
+}
+
+/* ── TOOLTIP TRIGGER ── */
+.tip{
+  display:inline-flex;align-items:center;gap:4px;
+  cursor:pointer;
+  border-bottom:1px dashed rgba(0,212,255,0.4);
+  transition:border-color 0.2s;
+  position:relative;
+}
+.tip:hover{border-color:var(--neon-blue);}
+.tip .qmark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;
+  border-radius:50%;
+  border:1px solid var(--neon-blue);
+  font-size:10px;
+  font-family:'Share Tech Mono',monospace;
+  color:var(--neon-blue);
+  line-height:1;
+  flex-shrink:0;
+  transition:background 0.2s,color 0.2s;
+}
+.tip:hover .qmark{background:var(--neon-blue);color:#000;}
+
+/* ── SIDE PANEL OVERLAY ── */
+#panel-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,8,0.6);
+  backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;
+  transition:opacity 0.4s;
+}
+#panel-overlay.open{opacity:1;pointer-events:all;}
+
+/* ── SIDE PANEL ── */
+#side-panel{
+  position:fixed;top:0;right:0;bottom:0;z-index:501;
+  width:min(480px,95vw);
+  background:#000c18;
+  border-left:1px solid rgba(0,212,255,0.25);
+  transform:translateX(100%);
+  transition:transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+#side-panel.open{transform:translateX(0);}
+
+.panel-header{
+  padding:28px 28px 20px;
+  border-bottom:1px solid rgba(0,212,255,0.1);
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;
+  flex-shrink:0;
+}
+.panel-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--neon-pink);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.panel-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:28px;
+  font-weight:700;
+  color:#fff;
+  line-height:1.1;
+}
+.panel-close{
+  background:none;border:1px solid rgba(0,212,255,0.3);
+  color:var(--dim);cursor:pointer;
+  width:36px;height:36px;border-radius:4px;
+  font-size:18px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:border-color 0.2s,color 0.2s;
+}
+.panel-close:hover{border-color:var(--neon-blue);color:var(--neon-blue);}
+
+.panel-canvas-wrap{
+  flex-shrink:0;
+  padding:0 28px;
+  margin-top:20px;
+}
+.panel-canvas-wrap canvas{
+  width:100%;
+  border:1px solid rgba(0,212,255,0.1);
+  border-radius:4px;
+  display:block;
+}
+
+.panel-body{
+  flex:1;overflow-y:auto;
+  padding:20px 28px 40px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,212,255,0.2) transparent;
+}
+.panel-body::-webkit-scrollbar{width:4px;}
+.panel-body::-webkit-scrollbar-track{background:transparent;}
+.panel-body::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.2);border-radius:2px;}
+
+.panel-section{
+  margin-bottom:24px;
+}
+.panel-section-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:15px;font-weight:700;
+  color:var(--neon-blue);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.panel-text{
+  font-size:14px;font-weight:300;
+  line-height:1.8;color:#8a9bb0;
+}
+.panel-text strong{color:var(--text);font-weight:600;}
+.panel-highlight{
+  border-left:2px solid var(--neon-blue);
+  padding:12px 16px;
+  background:rgba(0,212,255,0.04);
+  margin:16px 0;
+  font-family:'Share Tech Mono',monospace;
+  font-size:12px;color:var(--neon-blue);
+  line-height:1.7;
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars-bg"></canvas>
+
+<!-- SIDE PANEL -->
+<div id="panel-overlay"></div>
+<div id="side-panel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-tag" id="panel-tag">Approfondimento</div>
+      <div class="panel-title" id="panel-title">—</div>
+    </div>
+    <button class="panel-close" id="panel-close">✕</button>
+  </div>
+  <div class="panel-canvas-wrap" id="panel-canvas-wrap" style="display:none;">
+    <canvas id="panel-canvas" width="420" height="200"></canvas>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<nav>
+  <div class="nav-logo">Alcubierre // Warp Drive</div>
+  <div class="nav-links">
+    <a href="#regola">La regola</a>
+    <a href="#eccezione">L'eccezione</a>
+    <a href="#bolla">La bolla</a>
+    <a href="#adm">Formalismo</a>
+    <a href="#problema">Il problema</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-tag">Capolavoro — UNICA Istruzione</div>
+  <h1 class="hero-title">
+    <span class="line1">Metrica di</span>
+    <span class="line2">Alcubierre</span>
+  </h1>
+  <p class="hero-subtitle">Una bolla di spazio-tempo che si muove. Una nave che rimane ferma. Un viaggio più veloce della luce senza violare nessuna legge fisica.</p>
+  <div class="hero-question">Si può viaggiare più veloci della luce <span>senza violare Einstein?</span></div>
+  <div class="scroll-hint">Scorri per esplorare</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEZIONE 1: LA REGOLA -->
+<section id="regola">
+  <div class="sec-num">01</div>
+  <div class="section-inner reveal">
+    <div class="text-block">
+      <div class="section-tag">La regola</div>
+      <h2 class="section-title">Nulla è più veloce della <em>luce</em></h2>
+      <p class="section-body">La Relatività Ristretta di Einstein è chiara: nessun oggetto con massa può raggiungere o superare la velocità della luce. <strong><span class="tip" data-tip="locale">Localmente<span class="qmark">?</span></span></strong>, all'interno del proprio <span class="tip" data-tip="cono">cono di luce<span class="qmark">?</span></span>, questa legge è assoluta.</p>
+      <p class="section-body">Il <span class="tip" data-tip="cono">cono di luce<span class="qmark">?</span></span> è il confine causale di ogni osservatore — l'insieme di tutti gli eventi che può influenzare o essere influenzato. Dentro quel cono, la fisica è piatta, euclidea, quella che conosciamo.</p>
+      <div class="highlight-box">
+        "Localmente vuol dire dentro il proprio cono di luce — lì la fisica è quella nota, quella piatta."
+      </div>
+      <p class="section-body">Ma questa regola vale <strong><span class="tip" data-tip="locale">localmente<span class="qmark">?</span></span></strong>. <strong><span class="tip" data-tip="globale">Globalmente<span class="qmark">?</span></span></strong>, lo spazio-tempo può fare cose molto diverse.</p>
+    </div>
+    <div>
+      <canvas id="cone-canvas" class="anim" width="500" height="440"></canvas>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEZIONE 2: L'ECCEZIONE -->
+<section id="eccezione">
+  <div class="sec-num">02</div>
+  <div class="section-inner reverse reveal">
+    <div class="text-block">
+      <div class="section-tag">L'eccezione</div>
+      <h2 class="section-title">Il Big Bang e l'<em>inflazione</em></h2>
+      <p class="section-body">13,8 miliardi di anni fa, durante l'<span class="tip" data-tip="inflazione">inflazione cosmica<span class="qmark">?</span></span>, due punti dell'universo si sono allontanati tra loro a velocità enormemente superiori a quella della luce.</p>
+      <p class="section-body">Non perché qualcosa si muovesse <em>nello</em> spazio — ma perché lo spazio stesso si espandeva. Ognuno dei due osservatori era fermo nel proprio <span class="tip" data-tip="cono">cono di luce<span class="qmark">?</span></span>. Ma <span class="tip" data-tip="globale">globalmente<span class="qmark">?</span></span>, la loro distanza cresceva in modo superluminale.</p>
+      <div class="highlight-box">
+        Non è l'oggetto che supera c.<br>È lo spazio-tempo stesso che si espande,<br>e può farlo senza limiti.
+      </div>
+      <p class="section-body">Alcubierre parte esattamente da questa osservazione. Se lo spazio può espandersi più veloce della luce, possiamo <strong>usarlo</strong>?</p>
+    </div>
+    <div>
+      <canvas id="inflation-canvas" class="anim" width="500" height="440"></canvas>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEZIONE 3: LA BOLLA -->
+<section id="bolla">
+  <div class="sec-num">03</div>
+  <div class="section-inner reveal">
+    <div class="text-block">
+      <div class="section-tag">La soluzione</div>
+      <h2 class="section-title">La <em>bolla</em> di Alcubierre</h2>
+      <p class="section-body">Nel 1994 Miguel Alcubierre propone una metrica — una geometria dello spazio-tempo — in cui una nave può viaggiare a velocità superluminale senza violare nessuna legge locale.</p>
+      <p class="section-body"><strong>Davanti alla nave</strong>, lo spazio-tempo si contrae. <strong>Dietro</strong>, si espande. La nave rimane ferma al centro della bolla, in caduta libera, senza subire alcuna forza o accelerazione.</p>
+      <div class="formula-box" style="position:relative;">
+        <div class="formula-label">Metrica di Alcubierre</div>
+        ds² = −c²dt² + (dx − v<sub>s</sub>(t)f(r<sub>s</sub>)dt)² + dy² + dz²
+        <span class="tip" data-tip="metrica" style="position:absolute;top:12px;right:14px;border-bottom:none;">
+          <span class="qmark" style="width:20px;height:20px;font-size:12px;">?</span>
+        </span>
+      </div>
+      <p class="section-body">È lo spazio che si muove, portando la nave con sé. Per un osservatore esterno, la nave scompare in un istante.</p>
+      <div style="display:flex;gap:16px;align-items:flex-start;margin-top:20px;">
+        <div style="flex:1;">
+          <div class="controls">
+            <div class="ctrl">
+              <label>Curvatura σ</label>
+              <input type="range" id="warp-sig" min="0.3" max="3" step="0.05" value="1.5">
+              <span class="val" id="warp-sig-v">1.50</span>
+            </div>
+          </div>
+          <p style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);margin-top:8px;letter-spacing:1px;">
+            Trascina per deformare lo spazio-tempo
+          </p>
+        </div>
+        <div id="speed-box" style="
+          border:1px solid rgba(0,212,255,0.3);
+          background:rgba(0,212,255,0.04);
+          border-radius:4px;
+          padding:12px 16px;
+          min-width:130px;
+          text-align:center;
+          flex-shrink:0;
+        ">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:6px;">Velocità bolla</div>
+          <div id="speed-display" style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--neon-blue);line-height:1;">1.50<span style="font-size:14px;margin-left:2px;">c</span></div>
+          <div id="speed-bar-wrap" style="margin-top:8px;height:3px;background:rgba(0,212,255,0.1);border-radius:2px;">
+            <div id="speed-bar" style="height:100%;width:50%;background:var(--neon-blue);border-radius:2px;transition:width 0.3s,background 0.3s;"></div>
+          </div>
+          <div id="speed-label" style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);margin-top:6px;">SUPERLUMINALE</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <canvas id="warp-canvas" class="anim" width="500" height="440"></canvas>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEZIONE 4: FORMALISMO ADM -->
+<section id="adm">
+  <div class="sec-num">04</div>
+  <div class="section-inner reverse reveal">
+    <div class="text-block">
+      <div class="section-tag">La matematica</div>
+      <h2 class="section-title">Formalismo <em>ADM</em></h2>
+      <p class="section-body">Per costruire la metrica, Alcubierre usa il <span class="tip" data-tip="adm">formalismo ADM<span class="qmark">?</span></span> di Arnowitt, Deser e Misner: lo spazio-tempo è descritto come una successione di ipersuperfici tridimensionali che si evolvono nel tempo — come pagine di un libro.</p>
+      <div class="formula-box" style="position:relative;">
+        <div class="formula-label">Metrica ADM generale</div>
+        ds² = −(α² − βᵢβⁱ)dt² + 2βᵢdxⁱdt + γᵢⱼdxⁱdxʲ
+        <span class="tip" data-tip="metrica-adm" style="position:absolute;top:12px;right:14px;border-bottom:none;">
+          <span class="qmark" style="width:20px;height:20px;font-size:12px;">?</span>
+        </span>
+      </div>
+      <p class="section-body">Tre parametri fondamentali descrivono questa geometria:</p>
+      <div class="highlight-box">
+        <strong style="color:#fff">α</strong> — lapse function: quanto tempo scorre tra due ipersuperfici<br>
+        <strong style="color:#fff">βⁱ</strong> — shift vector: come cambiano le coordinate tra ipersuperfici<br>
+        <strong style="color:#fff">γᵢⱼ</strong> — tensore metrico: misura distanze e angoli sulla superficie
+      </div>
+      <p class="section-body">Alcubierre impone α = 1, βˣ = −v<sub>s</sub>(t)f(r<sub>s</sub>), βʸ = βᶻ = 0. Da queste condizioni emerge la sua metrica.</p>
+    </div>
+    <div>
+      <canvas id="adm-canvas" class="anim" width="500" height="440"></canvas>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEZIONE 5: IL PROBLEMA -->
+<section id="problema">
+  <div class="sec-num">05</div>
+  <div class="section-inner reveal">
+    <div class="text-block">
+      <div class="section-tag">Il tallone di Achille</div>
+      <h2 class="section-title">Energia <em>negativa</em></h2>
+      <p class="section-body">Alcubierre stesso, alla fine del suo articolo del 1994, ammette il problema fondamentale: per generare la curvatura necessaria, serve <strong>densità di energia negativa</strong>.</p>
+      <div class="formula-box" style="position:relative;">
+        <div class="formula-label">Densità di energia osservatori euleriani</div>
+        ρ = − (1/8π) · v²ₛ(t) · ρ²(y,z) · (df/dr<sub>s</sub>)²/r<sub>s</sub>² &lt; 0
+        <span class="tip" data-tip="densita-energia" style="position:absolute;top:12px;right:14px;border-bottom:none;">
+          <span class="qmark" style="width:20px;height:20px;font-size:12px;">?</span>
+        </span>
+      </div>
+      <div class="warning-box">
+        <div class="w-title">⚠ Violazione <span class="tip" data-tip="wec" style="border-bottom-color:rgba(255,45,120,0.4)">WEC<span class="qmark" style="border-color:var(--neon-pink);color:var(--neon-pink)">?</span></span></div>
+        <p>Questo viola la <span class="tip" data-tip="wec">Weak Energy Condition<span class="qmark">?</span></span>: qualsiasi osservatore che viaggi a velocità inferiore a c dovrebbe sempre misurare densità di energia positive. Con il warp drive, questo non accade.</p>
+      </div>
+      <p class="section-body">È lo stesso problema dei wormhole: anche lì serve <strong>materia esotica</strong> con energia negativa per mantenere aperto il tunnel spazio-temporale. E per ora, questa materia non esiste nelle quantità necessarie.</p>
+    </div>
+    <div>
+      <canvas id="energy-canvas" class="anim" width="500" height="440"></canvas>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER / CONCLUSIONE -->
+<footer>
+  <div class="footer-title reveal">
+    Fantascienza costruita<br>su fisica reale.
+  </div>
+  <p class="footer-body reveal">
+    Il warp drive di Alcubierre è, per ora, impossibile. Ma è impossibile nel modo più bello: costruito rigorosamente sulle equazioni di Einstein, su una matematica solida, su un ragionamento fisico ineccepibile. E la storia della scienza ci ha insegnato che le idee che oggi sembrano impossibili, domani diventano il punto di partenza per qualcosa di inaspettato.
+  </p>
+  <div class="footer-credits reveal">
+    Capolavoro UNICA Istruzione — <span>Cimmino Matteo</span> — Classe III
+  </div>
+  <!-- TASTO SEGRETO -->
+  <button id="secret-btn" title="" style="
+    position:absolute;bottom:24px;right:32px;
+    width:28px;height:28px;
+    background:transparent;
+    border:1px solid rgba(0,212,255,0.08);
+    border-radius:4px;
+    cursor:pointer;
+    transition:border-color 0.3s;
+  " onmouseover="this.style.borderColor='rgba(0,212,255,0.25)'"
+     onmouseout="this.style.borderColor='rgba(0,212,255,0.08)'">
+  </button>
+</footer>
+
+<!-- GAME MODAL -->
+<div id="game-overlay" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,8,0.95);backdrop-filter:blur(8px);overflow-y:auto;">
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;">
+<div style="width:min(960px,98vw);border:1px solid rgba(0,212,255,0.2);background:#000c18;border-radius:6px;overflow:hidden;">
+
+  <!-- HEADER -->
+  <div style="padding:18px 28px;border-bottom:1px solid rgba(0,212,255,0.1);display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,20,0.6);">
+    <div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--neon-pink);text-transform:uppercase;margin-bottom:4px;">SIMULAZIONE — CORSA SPAZIALE</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;">Warp Drive: La Gara delle Superpotenze</div>
+    </div>
+    <button id="game-close" style="background:none;border:1px solid rgba(0,212,255,0.3);color:var(--dim);cursor:pointer;width:36px;height:36px;border-radius:4px;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div style="padding:12px 28px;border-bottom:1px solid rgba(0,212,255,0.07);display:flex;gap:24px;align-items:center;flex-wrap:wrap;background:rgba(0,0,15,0.4);">
+    <div style="display:flex;gap:6px;align-items:center;">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--dim);">ANNO</span>
+      <span id="g-year" style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;">2025</span>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--dim);">FONDI</span>
+      <span id="g-funds" style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--neon-green);">$50B</span>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--dim);">LIVELLO</span>
+      <span id="g-level" style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--neon-blue);">1 / 3</span>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--dim);">σ ATTUALE</span>
+      <span id="g-sigma" style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--neon-purple);">0.8</span>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--dim);">VELOCITÀ</span>
+      <span id="g-speed" style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--neon-blue);">0.94c</span>
+    </div>
+    <div style="margin-left:auto;">
+      <button id="game-reset" style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;background:transparent;border:1px solid rgba(100,130,150,0.3);color:var(--dim);border-radius:3px;cursor:pointer;">↺ Ricomincia</button>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div style="display:grid;grid-template-columns:1fr 300px;min-height:400px;">
+
+    <!-- CANVAS SIMULAZIONE -->
+    <div style="border-right:1px solid rgba(0,212,255,0.07);">
+      <canvas id="game-canvas" width="640" height="360" style="width:100%;display:block;background:#000c18;"></canvas>
+    </div>
+
+    <!-- PANNELLO DESTRA -->
+    <div style="padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:360px;">
+
+      <!-- RICERCA -->
+      <div style="border:1px solid rgba(0,212,255,0.15);border-radius:4px;padding:12px;background:rgba(0,212,255,0.02);">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--neon-blue);text-transform:uppercase;margin-bottom:8px;">Ricerca</div>
+        <div id="research-bars" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <div id="g-research-progress" style="margin-top:10px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);">PROGRESSO LVL</span>
+            <span id="g-prog-pct" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--neon-blue);">0%</span>
+          </div>
+          <div style="height:4px;background:rgba(0,212,255,0.1);border-radius:2px;">
+            <div id="g-prog-bar" style="height:100%;width:0%;background:var(--neon-blue);border-radius:2px;transition:width 0.4s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSEGNA FONDI -->
+      <div id="g-allocate-box" style="border:1px solid rgba(57,255,20,0.2);border-radius:4px;padding:12px;background:rgba(57,255,20,0.02);">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--neon-green);text-transform:uppercase;margin-bottom:8px;">Alloca fondi annuali</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);">RICERCA WEC</span>
+              <span id="alloc-research-v" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--neon-green);">$20B</span>
+            </div>
+            <input type="range" id="alloc-research" min="0" max="50" step="5" value="20" style="-webkit-appearance:none;height:2px;background:rgba(57,255,20,0.2);outline:none;border-radius:2px;width:100%;cursor:pointer;">
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);">STABILITÀ BOLLA</span>
+              <span id="alloc-stability-v" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--neon-purple);">$15B</span>
+            </div>
+            <input type="range" id="alloc-stability" min="0" max="50" step="5" value="15" style="-webkit-appearance:none;height:2px;background:rgba(191,95,255,0.2);outline:none;border-radius:2px;width:100%;cursor:pointer;">
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);">PROPULSIONE</span>
+              <span id="alloc-propulsion-v" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--neon-orange);">$15B</span>
+            </div>
+            <input type="range" id="alloc-propulsion" min="0" max="50" step="5" value="15" style="-webkit-appearance:none;height:2px;background:rgba(255,140,0,0.2);outline:none;border-radius:2px;width:100%;cursor:pointer;">
+          </div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);margin-top:2px;">Totale: <span id="alloc-total" style="color:#fff;">$50B</span> / $50B anno</div>
+        </div>
+        <button id="g-next-year" style="margin-top:10px;width:100%;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px;background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.4);color:var(--neon-green);border-radius:3px;cursor:pointer;">▶ Anno successivo</button>
+      </div>
+
+      <!-- NEWS -->
+      <div style="border:1px solid rgba(255,45,120,0.15);border-radius:4px;padding:12px;background:rgba(255,45,120,0.02);flex:1;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--neon-pink);text-transform:uppercase;margin-bottom:8px;">📡 Notizie</div>
+        <div id="g-news" style="display:flex;flex-direction:column;gap:6px;font-size:11px;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM MSG -->
+  <div id="game-msg" style="padding:12px 28px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--dim);border-top:1px solid rgba(0,212,255,0.07);min-height:40px;background:rgba(0,0,15,0.4);"></div>
+
+</div>
+</div>
+</div>
+
+<script>
+// ─── STARS ───────────────────────────────────────────────
+const starsC = document.getElementById('stars-bg');
+const sCtx = starsC.getContext('2d');
+let stars = [];
+function resizeStars(){
+  starsC.width = window.innerWidth;
+  starsC.height = window.innerHeight;
+}
+function initStars(){
+  stars = [];
+  for(let i=0;i<200;i++){
+    stars.push({
+      x:Math.random()*starsC.width,
+      y:Math.random()*starsC.height,
+      r:Math.random()*1.2,
+      a:Math.random(),
+      speed:0.0003+Math.random()*0.001
+    });
+  }
+}
+function drawStars(){
+  sCtx.clearRect(0,0,starsC.width,starsC.height);
+  stars.forEach(s=>{
+    s.a += s.speed;
+    const alpha = 0.2+0.6*Math.abs(Math.sin(s.a));
+    sCtx.beginPath();
+    sCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sCtx.fillStyle=`rgba(180,210,255,${alpha})`;
+    sCtx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+resizeStars();initStars();drawStars();
+window.addEventListener('resize',()=>{resizeStars();initStars();});
+
+// ─── HERO CANVAS ─────────────────────────────────────────
+const hC = document.getElementById('hero-canvas');
+const hCtx = hC.getContext('2d');
+let hT = 0;
+function resizeHero(){
+  hC.width = hC.offsetWidth;
+  hC.height = hC.offsetHeight;
+}
+resizeHero();
+window.addEventListener('resize',resizeHero);
+
+function drawHero(){
+  const W=hC.width,H=hC.height,cx=W/2,cy=H/2;
+  hCtx.clearRect(0,0,W,H);
+  // grid warp
+  const cols=16,rows=10,gx=W/cols,gy=H/rows;
+  const bR=Math.min(W,H)*0.28;
+  const ws=1.8+0.3*Math.sin(hT*0.02);
+  for(let j=0;j<=rows;j++){
+    hCtx.beginPath();
+    let first=true;
+    for(let i=0;i<=cols*3;i++){
+      const fx=(i/3)*gx,fy=j*gy;
+      const dx=fx-cx,dy=fy-cy;
+      const r=Math.sqrt(dx*dx+dy*dy);
+      const wf=ws*0.5*(Math.tanh(6*(r-bR*0.4))-Math.tanh(6*(r-bR*1.0)));
+      const ang=Math.atan2(dy,dx);
+      const px=fx-wf*30*Math.cos(ang);
+      const py=fy-wf*12*Math.sin(ang);
+      if(first){hCtx.moveTo(px,py);first=false;}else hCtx.lineTo(px,py);
+    }
+    const t=Math.abs(j*gy-cy)/(H/2);
+    const isExpansion=(j*gy)<cy;
+    hCtx.strokeStyle=isExpansion?`rgba(57,255,20,${0.08+0.12*(1-t)})`:`rgba(0,212,255,${0.08+0.12*(1-t)})`;
+    hCtx.lineWidth=0.8;hCtx.stroke();
+  }
+  for(let i=0;i<=cols;i++){
+    hCtx.beginPath();let first=true;
+    for(let j=0;j<=rows*3;j++){
+      const fx=i*gx,fy=(j/3)*gy;
+      const dx=fx-cx,dy=fy-cy;
+      const r=Math.sqrt(dx*dx+dy*dy);
+      const wf=ws*0.5*(Math.tanh(6*(r-bR*0.4))-Math.tanh(6*(r-bR*1.0)));
+      const ang=Math.atan2(dy,dx);
+      const px=fx-wf*30*Math.cos(ang);
+      const py=fy-wf*12*Math.sin(ang);
+      if(first){hCtx.moveTo(px,py);first=false;}else hCtx.lineTo(px,py);
+    }
+    const t=Math.abs(i*gx-cx)/(W/2);
+    hCtx.strokeStyle=`rgba(0,212,255,${0.06+0.1*(1-t)})`;
+    hCtx.lineWidth=0.8;hCtx.stroke();
+  }
+  // bubble
+  const pulse=1+0.04*Math.sin(hT*0.03);
+  hCtx.beginPath();
+  hCtx.ellipse(cx,cy,bR*pulse,bR*0.7*pulse,0,0,Math.PI*2);
+  hCtx.strokeStyle='rgba(0,212,255,0.5)';
+  hCtx.lineWidth=1.5;hCtx.stroke();
+  // glow ring
+  const g=hCtx.createRadialGradient(cx,cy,bR*0.6,cx,cy,bR*1.1);
+  g.addColorStop(0,'rgba(0,212,255,0)');
+  g.addColorStop(0.8,'rgba(0,212,255,0.06)');
+  g.addColorStop(1,'rgba(0,212,255,0)');
+  hCtx.beginPath();
+  hCtx.ellipse(cx,cy,bR*pulse,bR*0.7*pulse,0,0,Math.PI*2);
+  hCtx.fillStyle=g;hCtx.fill();
+  // ship
+  hCtx.save();hCtx.translate(cx,cy);
+  hCtx.beginPath();
+  hCtx.moveTo(22,0);hCtx.lineTo(-16,-7);hCtx.lineTo(-10,0);hCtx.lineTo(-16,7);
+  hCtx.closePath();
+  hCtx.fillStyle='rgba(200,220,255,0.9)';hCtx.fill();
+  hCtx.restore();
+  hT++;requestAnimationFrame(drawHero);
+}
+drawHero();
+
+// ─── CONE CANVAS ─────────────────────────────────────────
+const coneC=document.getElementById('cone-canvas');
+const cCtx=coneC.getContext('2d');
+let cT=0;
+function drawCone(){
+  const W=500,H=440,cx=W/2,cy=H*0.55;
+  cCtx.clearRect(0,0,W,H);
+  cCtx.fillStyle='#000010';cCtx.fillRect(0,0,W,H);
+  // observer
+  cCtx.beginPath();cCtx.arc(cx,cy,5,0,Math.PI*2);
+  cCtx.fillStyle='#fff';cCtx.fill();
+  // past cone
+  const maxR=180;
+  for(let r=20;r<=maxR;r+=20){
+    const alpha=0.04*(1-r/maxR);
+    cCtx.beginPath();
+    cCtx.ellipse(cx,cy+r*0.5,r,r*0.2,0,0,Math.PI*2);
+    cCtx.fillStyle=`rgba(0,100,200,${alpha})`;cCtx.fill();
+  }
+  // future cone
+  for(let r=20;r<=maxR;r+=20){
+    const alpha=0.05*(1-r/maxR);
+    cCtx.beginPath();
+    cCtx.ellipse(cx,cy-r*0.5,r,r*0.2,0,0,Math.PI*2);
+    cCtx.fillStyle=`rgba(0,212,255,${alpha})`;cCtx.fill();
+  }
+  // cone lines
+  cCtx.strokeStyle='rgba(0,212,255,0.5)';cCtx.lineWidth=1;
+  cCtx.beginPath();cCtx.moveTo(cx,cy);cCtx.lineTo(cx-maxR,cy-maxR*0.55);cCtx.stroke();
+  cCtx.beginPath();cCtx.moveTo(cx,cy);cCtx.lineTo(cx+maxR,cy-maxR*0.55);cCtx.stroke();
+  cCtx.strokeStyle='rgba(0,100,200,0.4)';
+  cCtx.beginPath();cCtx.moveTo(cx,cy);cCtx.lineTo(cx-maxR,cy+maxR*0.55);cCtx.stroke();
+  cCtx.beginPath();cCtx.moveTo(cx,cy);cCtx.lineTo(cx+maxR,cy+maxR*0.55);cCtx.stroke();
+  // labels
+  cCtx.font='500 12px "Share Tech Mono"';
+  cCtx.fillStyle='rgba(0,212,255,0.8)';cCtx.textAlign='center';
+  cCtx.fillText('FUTURO',cx,cy-maxR*0.6);
+  cCtx.fillStyle='rgba(0,100,200,0.7)';
+  cCtx.fillText('PASSATO',cx,cy+maxR*0.65);
+  // light ray animated
+  const angle=-Math.PI/4+Math.sin(cT*0.02)*0.2;
+  const lx=cx+Math.cos(angle)*((cT%200)/200)*120;
+  const ly=cy-Math.sin(Math.abs(angle))*((cT%200)/200)*120;
+  cCtx.beginPath();cCtx.arc(lx,ly,3,0,Math.PI*2);
+  cCtx.fillStyle='#ff0';cCtx.fill();
+  cCtx.fillStyle='rgba(255,255,0,0.8)';
+  cCtx.font='10px "Share Tech Mono"';
+  cCtx.fillText('fotone',lx+12,ly-8);
+  // observer label
+  cCtx.fillStyle='rgba(255,255,255,0.7)';cCtx.font='11px "Share Tech Mono"';
+  cCtx.fillText('osservatore',cx,cy+18);
+  cT++;requestAnimationFrame(drawCone);
+}
+drawCone();
+
+// ─── INFLATION CANVAS ────────────────────────────────────
+const inflC=document.getElementById('inflation-canvas');
+const iCtx=inflC.getContext('2d');
+let iT=0;
+const PHASES2=[80,160,120,120];
+let iPhase=0,iPhaseT=0;
+function eOut(x){return 1-Math.pow(1-x,3);}
+function drawInflation(){
+  const W=500,H=440,cx=W/2,cy=H/2;
+  iCtx.clearRect(0,0,W,H);
+  iCtx.fillStyle='#000010';iCtx.fillRect(0,0,W,H);
+  const prog=Math.min(iPhaseT/PHASES2[iPhase],1);
+  const step=32;
+
+  function grid(scale,alpha){
+    iCtx.save();iCtx.globalAlpha=alpha;
+    for(let i=-8;i<=8;i++){
+      iCtx.beginPath();
+      iCtx.moveTo(cx+i*step*scale,0);iCtx.lineTo(cx+i*step*scale,H);
+      iCtx.strokeStyle='rgba(0,80,140,1)';iCtx.lineWidth=0.6;iCtx.stroke();
+    }
+    for(let j=-7;j<=7;j++){
+      iCtx.beginPath();
+      iCtx.moveTo(0,cy+j*step*scale);iCtx.lineTo(W,cy+j*step*scale);
+      iCtx.stroke();
+    }
+    iCtx.restore();
+  }
+
+  if(iPhase===0){
+    grid(1,eOut(prog)*0.5);
+    iCtx.beginPath();iCtx.arc(cx,cy,6+4*eOut(prog),0,Math.PI*2);
+    iCtx.fillStyle='rgba(0,212,255,0.9)';iCtx.fill();
+    iCtx.font='11px "Share Tech Mono"';iCtx.fillStyle='rgba(0,212,255,0.6)';
+    iCtx.textAlign='center';iCtx.fillText('UNIVERSO PRIMORDIALE',cx,H-20);
+  }
+  if(iPhase===1){
+    const sc=1+eOut(prog)*2.5;
+    grid(sc,0.35);
+    const r=8+eOut(prog)*170;
+    iCtx.beginPath();iCtx.arc(cx,cy,r,0,Math.PI*2);
+    iCtx.strokeStyle=`rgba(0,212,255,${0.6-prog*0.2})`;iCtx.lineWidth=1.5;iCtx.stroke();
+    const sp=eOut(prog)*200;
+    // dot A
+    iCtx.beginPath();iCtx.arc(cx-sp,cy,7,0,Math.PI*2);
+    iCtx.fillStyle='#ff8c00';iCtx.fill();
+    // dot B
+    iCtx.beginPath();iCtx.arc(cx+sp,cy,7,0,Math.PI*2);
+    iCtx.fillStyle='#39ff14';iCtx.fill();
+    iCtx.font='11px "Share Tech Mono"';iCtx.textAlign='right';
+    iCtx.fillStyle='rgba(255,140,0,0.8)';iCtx.fillText('A',cx-sp-10,cy+4);
+    iCtx.textAlign='left';iCtx.fillStyle='rgba(57,255,20,0.8)';iCtx.fillText('B',cx+sp+10,cy+4);
+    iCtx.textAlign='center';iCtx.fillStyle='rgba(0,212,255,0.5)';iCtx.font='10px "Share Tech Mono"';
+    iCtx.fillText('INFLAZIONE COSMICA',cx,H-20);
+  }
+  if(iPhase===2){
+    grid(3.5,0.2);
+    const sp=200;
+    // cones
+    [cx-sp,cx+sp].forEach((x,idx)=>{
+      iCtx.beginPath();iCtx.arc(x,cy,80,0,Math.PI*2);
+      iCtx.fillStyle=`rgba(0,212,255,0.04)`;iCtx.fill();
+      iCtx.beginPath();iCtx.arc(x,cy,80,0,Math.PI*2);
+      iCtx.strokeStyle='rgba(0,212,255,0.3)';iCtx.lineWidth=0.8;
+      iCtx.setLineDash([4,4]);iCtx.stroke();iCtx.setLineDash([]);
+      iCtx.beginPath();iCtx.arc(x,cy,7,0,Math.PI*2);
+      iCtx.fillStyle=idx===0?'#ff8c00':'#39ff14';iCtx.fill();
+      iCtx.font='10px "Share Tech Mono"';
+      iCtx.fillStyle='rgba(0,212,255,0.5)';iCtx.textAlign='center';
+      iCtx.fillText('cono di luce',x,cy+98);
+    });
+    iCtx.fillStyle='rgba(0,212,255,0.6)';iCtx.font='11px "Share Tech Mono"';
+    iCtx.fillText('LOCALMENTE: fisica normale',cx,H-20);
+  }
+  if(iPhase===3){
+    grid(3.5+eOut(prog)*1.5,0.2);
+    const sp=200+eOut(prog)*60;
+    const ax=cx-sp,bx=cx+sp;
+    iCtx.beginPath();iCtx.arc(ax,cy,7,0,Math.PI*2);
+    iCtx.fillStyle='#ff8c00';iCtx.fill();
+    iCtx.beginPath();iCtx.arc(bx,cy,7,0,Math.PI*2);
+    iCtx.fillStyle='#39ff14';iCtx.fill();
+    // arrow
+    iCtx.save();iCtx.globalAlpha=eOut(prog);
+    iCtx.beginPath();iCtx.moveTo(ax+12,cy-28);iCtx.lineTo(bx-12,cy-28);
+    iCtx.strokeStyle='#ff2d78';iCtx.lineWidth=1.5;iCtx.stroke();
+    iCtx.font='bold 13px "Share Tech Mono"';iCtx.fillStyle='#ff2d78';
+    iCtx.textAlign='center';iCtx.fillText('v > c',cx,cy-38);
+    iCtx.restore();
+    iCtx.fillStyle='rgba(255,45,120,0.6)';iCtx.font='11px "Share Tech Mono"';
+    iCtx.textAlign='center';iCtx.fillText('GLOBALMENTE: v > c',cx,H-20);
+  }
+
+  iPhaseT++;
+  if(iPhaseT>=PHASES2[iPhase]+30){iPhaseT=0;iPhase=(iPhase+1)%PHASES2.length;}
+  requestAnimationFrame(drawInflation);
+}
+drawInflation();
+
+// ─── WARP CANVAS ─────────────────────────────────────────
+const warpC=document.getElementById('warp-canvas');
+const wCtx=warpC.getContext('2d');
+let wT=0;
+let wSig=1.5;
+// Velocità calcolata da σ: v = 0.3 + σ * 0.8 (relazione fisica semplificata)
+function sigToSpeed(s){ return 0.3 + s * 0.8; }
+
+function updateSpeedBox(sig){
+  const v=sigToSpeed(sig);
+  const vStr=v.toFixed(2);
+  document.getElementById('speed-display').innerHTML=vStr+'<span style="font-size:14px;margin-left:2px;">c</span>';
+  // barra: 0→6c mappa su 0→100%
+  const pct=Math.min((v/6)*100,100);
+  const bar=document.getElementById('speed-bar');
+  bar.style.width=pct+'%';
+  // colore: subluminale=giallo, superluminale=blu→rosa
+  if(v<1){
+    bar.style.background='#ff8c00';
+    document.getElementById('speed-display').style.color='#ff8c00';
+    document.getElementById('speed-label').textContent='SUBLUMINALE';
+    document.getElementById('speed-box').style.borderColor='rgba(255,140,0,0.4)';
+  } else {
+    const intensity=Math.min((v-1)/3,1);
+    const r=Math.round(0+intensity*255);
+    const g=Math.round(212-intensity*167);
+    const b=255;
+    const col=`rgb(${r},${g},${b})`;
+    bar.style.background=col;
+    document.getElementById('speed-display').style.color=col;
+    document.getElementById('speed-label').textContent='SUPERLUMINALE';
+    document.getElementById('speed-box').style.borderColor=`rgba(${r},${g},${b},0.4)`;
+  }
+}
+
+document.getElementById('warp-sig').oninput=e=>{
+  wSig=+e.target.value;
+  document.getElementById('warp-sig-v').textContent=wSig.toFixed(2);
+  updateSpeedBox(wSig);
+};
+updateSpeedBox(wSig);
+
+function wf(dx,dy){
+  const r=Math.sqrt(dx*dx+dy*dy);
+  return wSig*0.5*(Math.tanh(8*(r-55*0.4))-Math.tanh(8*(r-55)));
+}
+function drawWarp(){
+  const W=500,H=440,cx=W/2,cy=H/2;
+  wCtx.clearRect(0,0,W,H);
+  wCtx.fillStyle='#000010';wCtx.fillRect(0,0,W,H);
+  const cols=18,rows=12,gx=W/cols,gy=H/rows;
+  // grid
+  for(let j=0;j<=rows;j++){
+    wCtx.beginPath();let first=true;
+    for(let i=0;i<=cols*4;i++){
+      const fx=(i/4)*gx,fy=j*gy;
+      const dx=fx-cx,dy=fy-cy;
+      const w=wf(dx,dy);
+      const ang=Math.atan2(dy,dx);
+      const px=fx-w*26*Math.cos(ang);
+      const py=fy-w*10*Math.sin(ang);
+      if(first){wCtx.moveTo(px,py);first=false;}else wCtx.lineTo(px,py);
+    }
+    // color by side: left=expansion(green), right=compression(red)
+    const isLeft=j*gy<cy;
+    wCtx.strokeStyle=isLeft?`rgba(57,255,20,0.15)`:`rgba(0,212,255,0.15)`;
+    wCtx.lineWidth=0.7;wCtx.stroke();
+  }
+  for(let i=0;i<=cols;i++){
+    wCtx.beginPath();let first=true;
+    for(let j=0;j<=rows*4;j++){
+      const fx=i*gx,fy=(j/4)*gy;
+      const dx=fx-cx,dy=fy-cy;
+      const w=wf(dx,dy);
+      const ang=Math.atan2(dy,dx);
+      const px=fx-w*26*Math.cos(ang);
+      const py=fy-w*10*Math.sin(ang);
+      if(first){wCtx.moveTo(px,py);first=false;}else wCtx.lineTo(px,py);
+    }
+    wCtx.strokeStyle=`rgba(0,212,255,0.12)`;wCtx.lineWidth=0.7;wCtx.stroke();
+  }
+  // compression zone (front=right)
+  const g1=wCtx.createRadialGradient(cx+44,cy,0,cx+44,cy,65);
+  g1.addColorStop(0,'rgba(0,212,255,0.2)');g1.addColorStop(1,'rgba(0,212,255,0)');
+  wCtx.beginPath();wCtx.ellipse(cx+44,cy,65,46,0,0,Math.PI*2);
+  wCtx.fillStyle=g1;wCtx.fill();
+  // expansion zone (behind=left)
+  const g2=wCtx.createRadialGradient(cx-44,cy,0,cx-44,cy,65);
+  g2.addColorStop(0,'rgba(57,255,20,0.15)');g2.addColorStop(1,'rgba(57,255,20,0)');
+  wCtx.beginPath();wCtx.ellipse(cx-44,cy,65,46,0,0,Math.PI*2);
+  wCtx.fillStyle=g2;wCtx.fill();
+  // bubble ring
+  const p=1+0.03*Math.sin(wT*0.05);
+  wCtx.beginPath();wCtx.ellipse(cx,cy,55*p,38*p,0,0,Math.PI*2);
+  wCtx.strokeStyle='rgba(0,212,255,0.6)';wCtx.lineWidth=1.5;wCtx.stroke();
+  // particles
+  const wSpeed=sigToSpeed(wSig);
+  for(let i=0;i<24;i++){
+    const bx=((wT*wSpeed*0.5+i*47)%(W+60))-30;
+    const by=cy+(((i*0.618)%1)-0.5)*80;
+    const dx=bx-cx,dy=by-cy;
+    if(Math.sqrt(dx*dx+dy*dy)<52)continue;
+    const len=6+wSpeed*5;
+    wCtx.beginPath();wCtx.moveTo(bx,by);wCtx.lineTo(bx+len,by);
+    wCtx.strokeStyle=`rgba(120,180,255,0.25)`;wCtx.lineWidth=0.8;wCtx.stroke();
+  }
+  // ship
+  wCtx.save();wCtx.translate(cx,cy);
+  wCtx.beginPath();wCtx.moveTo(18,0);wCtx.lineTo(-12,-6);wCtx.lineTo(-8,0);wCtx.lineTo(-12,6);
+  wCtx.closePath();wCtx.fillStyle='rgba(200,220,255,0.9)';wCtx.fill();
+  wCtx.restore();
+  // labels
+  wCtx.font='10px "Share Tech Mono"';wCtx.textAlign='center';
+  wCtx.fillStyle='rgba(57,255,20,0.6)';wCtx.fillText('ESPANSIONE',cx-100,H-20);
+  wCtx.fillStyle='rgba(0,212,255,0.6)';wCtx.fillText('COMPRESSIONE',cx+100,H-20);
+  wT++;requestAnimationFrame(drawWarp);
+}
+drawWarp();
+
+// ─── ADM CANVAS ──────────────────────────────────────────
+const admC=document.getElementById('adm-canvas');
+const aCtx=admC.getContext('2d');
+let aT=0;
+function drawADM(){
+  const W=500,H=440;
+  aCtx.clearRect(0,0,W,H);
+  aCtx.fillStyle='#000010';aCtx.fillRect(0,0,W,H);
+  const numSlices=6;
+  const sliceH=55;
+  const baseY=H-60;
+  // draw slices from back to front
+  for(let s=numSlices-1;s>=0;s--){
+    const offset=s*sliceH;
+    const y=baseY-offset;
+    const alpha=0.15+0.12*(numSlices-s)/numSlices;
+    const warpAmt=12*Math.sin(aT*0.02+s*0.5);
+    // surface
+    aCtx.beginPath();
+    aCtx.moveTo(40,y+warpAmt*0.5);
+    aCtx.bezierCurveTo(160,y-20+warpAmt,340,y+20-warpAmt,460,y-warpAmt*0.5);
+    aCtx.lineTo(460,y+22-warpAmt*0.5);
+    aCtx.bezierCurveTo(340,y+42-warpAmt,160,y+22+warpAmt,40,y+22+warpAmt*0.5);
+    aCtx.closePath();
+    aCtx.fillStyle=`rgba(0,80,150,${alpha})`;aCtx.fill();
+    aCtx.strokeStyle=`rgba(0,212,255,${alpha*2.5})`;aCtx.lineWidth=0.8;aCtx.stroke();
+    // grid on surface
+    for(let gi=0;gi<5;gi++){
+      const gx=80+gi*80;
+      aCtx.beginPath();
+      aCtx.moveTo(gx,y-18+warpAmt*(gi/4-0.5));
+      aCtx.lineTo(gx,y+40+warpAmt*(gi/4-0.5));
+      aCtx.strokeStyle=`rgba(0,212,255,${alpha*1.5})`;aCtx.lineWidth=0.4;aCtx.stroke();
+    }
+    // alpha label on first two
+    if(s===0||s===1){
+      aCtx.font='10px "Share Tech Mono"';
+      aCtx.fillStyle='rgba(0,212,255,0.5)';
+      aCtx.textAlign='left';
+      aCtx.fillText('Σ'+(numSlices-s),42,y+14);
+    }
+  }
+  // lapse arrow between first two slices
+  const y0=baseY;
+  const y1=baseY-sliceH;
+  aCtx.beginPath();
+  aCtx.moveTo(250,y0-4);aCtx.lineTo(250,y1+4);
+  aCtx.strokeStyle='rgba(191,95,255,0.8)';aCtx.lineWidth=1.5;aCtx.stroke();
+  aCtx.beginPath();aCtx.moveTo(250,y1+4);
+  aCtx.lineTo(244,y1+14);aCtx.lineTo(256,y1+14);aCtx.closePath();
+  aCtx.fillStyle='rgba(191,95,255,0.8)';aCtx.fill();
+  aCtx.font='500 11px "Share Tech Mono"';
+  aCtx.fillStyle='rgba(191,95,255,0.9)';aCtx.textAlign='center';
+  aCtx.fillText('α (lapse)',250,y1-8);
+  // shift vector
+  const shiftX=20*Math.sin(aT*0.025);
+  aCtx.beginPath();
+  aCtx.moveTo(360,y0-4);aCtx.lineTo(360+shiftX,y1+4);
+  aCtx.strokeStyle='rgba(255,140,0,0.7)';aCtx.lineWidth=1.5;aCtx.stroke();
+  aCtx.font='11px "Share Tech Mono"';
+  aCtx.fillStyle='rgba(255,140,0,0.8)';aCtx.textAlign='left';
+  aCtx.fillText('βⁱ (shift)',368,y1-8);
+  // label
+  aCtx.font='10px "Share Tech Mono"';aCtx.fillStyle='rgba(0,212,255,0.4)';
+  aCtx.textAlign='center';
+  aCtx.fillText('FOLIAZIONE ADM — IPERSUPERFICI Σₜ',W/2,H-20);
+  aT++;requestAnimationFrame(drawADM);
+}
+drawADM();
+
+// ─── ENERGY CANVAS ───────────────────────────────────────
+const enC=document.getElementById('energy-canvas');
+const eCtx=enC.getContext('2d');
+let eT=0;
+function drawEnergy(){
+  const W=500,H=440,cx=W/2,cy=H/2;
+  eCtx.clearRect(0,0,W,H);
+  eCtx.fillStyle='#000010';eCtx.fillRect(0,0,W,H);
+  // energy density plot
+  const plotX=40,plotY=60,plotW=420,plotH=220;
+  // axes
+  eCtx.strokeStyle='rgba(160,190,210,0.6)';eCtx.lineWidth=0.8;
+  eCtx.beginPath();eCtx.moveTo(plotX,plotY);eCtx.lineTo(plotX,plotY+plotH);
+  eCtx.lineTo(plotX+plotW,plotY+plotH);eCtx.stroke();
+  // zero line
+  const zeroY=plotY+plotH*0.35;
+  eCtx.beginPath();eCtx.moveTo(plotX,zeroY);eCtx.lineTo(plotX+plotW,zeroY);
+  eCtx.strokeStyle='rgba(160,190,210,0.4)';eCtx.setLineDash([4,4]);eCtx.stroke();eCtx.setLineDash([]);
+  eCtx.font='11px "Share Tech Mono"';eCtx.fillStyle='rgba(180,210,230,0.9)';
+  eCtx.textAlign='right';eCtx.fillText('ρ = 0',plotX-4,zeroY+4);
+  eCtx.fillText('ρ',plotX-4,plotY+10);
+  eCtx.textAlign='center';eCtx.fillText('r',plotX+plotW,plotY+plotH+16);
+  // energy density curve ρ(r)
+  eCtx.beginPath();
+  for(let px=0;px<=plotW;px++){
+    const r=(px/plotW)*6-3;
+    const f=0.5*(Math.tanh(4*(r+1))-Math.tanh(4*(r-1)));
+    const dfdx=2*(1/Math.cosh(4*(r+1))**2-1/Math.cosh(4*(r-1))**2);
+    const rho=-(dfdx*dfdx);
+    const py2=zeroY-rho*260;
+    if(px===0)eCtx.moveTo(plotX+px,py2);else eCtx.lineTo(plotX+px,py2);
+  }
+  eCtx.strokeStyle='#ff2d78';eCtx.lineWidth=2;eCtx.stroke();
+  // fill negative region
+  eCtx.beginPath();
+  for(let px=0;px<=plotW;px++){
+    const r=(px/plotW)*6-3;
+    const f=0.5*(Math.tanh(4*(r+1))-Math.tanh(4*(r-1)));
+    const dfdx=2*(1/Math.cosh(4*(r+1))**2-1/Math.cosh(4*(r-1))**2);
+    const rho=-(dfdx*dfdx);
+    const py2=Math.min(zeroY,zeroY-rho*260);
+    if(px===0)eCtx.moveTo(plotX+px,zeroY);
+    eCtx.lineTo(plotX+px,py2);
+  }
+  eCtx.lineTo(plotX+plotW,zeroY);eCtx.closePath();
+  eCtx.fillStyle='rgba(255,45,120,0.12)';eCtx.fill();
+  // labels
+  eCtx.font='12px "Share Tech Mono"';
+  eCtx.fillStyle='rgba(255,45,120,1)';eCtx.textAlign='center';
+  eCtx.fillText('ρ < 0  —  ENERGIA NEGATIVA',cx,plotY+plotH+50);
+  eCtx.fillStyle='rgba(180,200,220,0.9)';eCtx.font='11px "Share Tech Mono"';
+  eCtx.fillText('Violazione della Weak Energy Condition (WEC)',cx,plotY+plotH+68);
+  // wec violation indicator animated
+  const blink=Math.sin(eT*0.08)>0;
+  eCtx.fillStyle=blink?'rgba(255,45,120,1)':'rgba(255,45,120,0.5)';
+  eCtx.font='500 13px "Share Tech Mono"';
+  eCtx.fillText('⚠  WEC VIOLATED',cx,H-20);
+  eT++;requestAnimationFrame(drawEnergy);
+}
+drawEnergy();
+
+// ─── SCROLL REVEAL ───────────────────────────────────────
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting)e.target.classList.add('visible');
+  });
+},{threshold:0.15});
+reveals.forEach(r=>obs.observe(r));
+
+// ─── SIDE PANEL ──────────────────────────────────────────
+const overlay=document.getElementById('panel-overlay');
+const panel=document.getElementById('side-panel');
+const panelTag=document.getElementById('panel-tag');
+const panelTitle=document.getElementById('panel-title');
+const panelBody=document.getElementById('panel-body');
+const panelClose=document.getElementById('panel-close');
+const panelCanvasWrap=document.getElementById('panel-canvas-wrap');
+const panelCanvas=document.getElementById('panel-canvas');
+let panelAnimId=null;
+
+const TIPS={
+  locale:{
+    tag:'Relatività Ristretta',
+    title:'Locale vs Globale',
+    hasCanvas:false,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Cosa significa "localmente"?</div>
+        <p class="panel-text">In fisica relativistica, <strong>localmente</strong> significa "in un intorno infinitesimale di un punto", dove lo spazio-tempo può essere considerato piatto come un foglio di carta. In questo piccolo angolo di universo, vale la Relatività Ristretta: nessun oggetto supera c, i segnali causali si propagano all'interno del cono di luce.</p>
+      </div>
+      <div class="panel-highlight">
+        Immagina di stare su una sfera enorme — la Terra. Localmente, il pavimento ti sembra piatto. Globalmente, è curvo. La fisica dello spazio-tempo funziona esattamente così.
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">E "globalmente"?</div>
+        <p class="panel-text"><strong>Globalmente</strong> significa guardare la struttura intera dello spazio-tempo, su grandi scale. Qui la curvatura conta, e due punti distanti possono avere una distanza che cresce più veloce di c — non perché qualcosa si muova, ma perché lo spazio stesso si espande o si deforma.</p>
+        <p class="panel-text" style="margin-top:12px">Alcubierre sfrutta esattamente questa distinzione: <em>localmente</em> niente viola Einstein, <em>globalmente</em> la nave si sposta a v > c.</p>
+      </div>
+    `
+  },
+  globale:{
+    tag:'Relatività Generale',
+    title:'La scala globale',
+    hasCanvas:false,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Lo spazio-tempo su grande scala</div>
+        <p class="panel-text">Quando guardiamo lo spazio-tempo su scale cosmologiche, la geometria non è più piatta. Lo spazio può espandersi, contrarsi, curvarsi. Due osservatori fermi nei loro rispettivi punti possono trovarsi a distanze sempre maggiori — non perché si muovano, ma perché lo spazio tra loro cresce.</p>
+      </div>
+      <div class="panel-highlight">
+        Analogia: due formiche ferme su un palloncino che si gonfia. Nessuna delle due si muove, eppure la distanza tra loro aumenta — e può farlo a qualsiasi velocità.
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Perché non viola Einstein?</div>
+        <p class="panel-text">La Relatività Speciale vieta oggetti che si muovono <em>attraverso</em> lo spazio a v > c. Non vieta lo spazio stesso di espandersi più veloce della luce. Questa è la porta che Alcubierre spalanca: invece di spingere la nave, muove lo spazio.</p>
+      </div>
+    `
+  },
+  cono:{
+    tag:'Relatività Ristretta',
+    title:'Cono di luce',
+    hasCanvas:true,
+    drawFn: drawPanelCone,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Cos'è il cono di luce?</div>
+        <p class="panel-text">Il cono di luce è la struttura geometrica che definisce cosa può causalmente influenzare un osservatore e cosa no. È il confine tra il raggiungibile e l'irraggiungibile.</p>
+        <p class="panel-text" style="margin-top:12px">Si chiama "cono" perché, nello spazio-tempo a 2 dimensioni (1 spaziale + 1 temporale), la traiettoria di un fotone forma una linea a 45° — e l'insieme di tutte queste traiettorie forma appunto un cono.</p>
+      </div>
+      <div class="panel-highlight">
+        Futuro: eventi che puoi influenzare.<br>
+        Passato: eventi che ti hanno influenzato.<br>
+        Esterno al cono: causalmente irraggiungibili.
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Perché è importante?</div>
+        <p class="panel-text">Qualsiasi segnale fisico — luce, gravità, informazione — non può uscire dal cono di luce. Questo è il vero significato di "niente va più veloce della luce": nessuna causalità può propagarsi fuori dal cono. La nave di Alcubierre <em>non</em> esce dal suo cono — è il cono stesso che si sposta.</p>
+      </div>
+    `
+  },
+  inflazione:{
+    tag:'Cosmologia',
+    title:'Inflazione cosmica',
+    hasCanvas:true,
+    drawFn: drawPanelInflation,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Cos'è l'inflazione?</div>
+        <p class="panel-text">L'inflazione cosmica è un periodo di espansione esponenziale rapidissima avvenuto circa 10⁻³⁶ secondi dopo il Big Bang. In un tempo brevissimo, l'universo è passato da dimensioni subatomiche a dimensioni macroscopiche.</p>
+      </div>
+      <div class="panel-highlight">
+        Durante l'inflazione, regioni dell'universo si sono allontanate tra loro a velocità enormemente superiori a c — senza violare nessuna legge fisica.
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">La prova che esiste già</div>
+        <p class="panel-text">L'inflazione non è speculazione: le sue impronte sono visibili nella <strong>radiazione cosmica di fondo</strong> (CMB), il "bagliore" residuo del Big Bang. Le fluttuazioni di temperatura nella CMB corrispondono esattamente alle previsioni dei modelli inflazionari.</p>
+        <p class="panel-text" style="margin-top:12px">Questo è cruciale per Alcubierre: l'espansione superluminale dello spazio non è fantascienza — è già successa, su scala cosmica.</p>
+      </div>
+    `
+  },
+  adm:{
+    tag:'Relatività Generale',
+    title:'Formalismo ADM',
+    hasCanvas:true,
+    drawFn: drawPanelADM,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Chi erano ADM?</div>
+        <p class="panel-text"><strong>Richard Arnowitt, Stanley Deser e Charles Misner</strong> svilupparono questo formalismo nel 1959. L'idea centrale: invece di trattare lo spazio-tempo come un blocco quadridimensionale, lo "affettano" in fette tridimensionali — ipersuperfici — che si evolvono nel tempo.</p>
+      </div>
+      <div class="panel-highlight">
+        Pensa a un film: ogni fotogramma è un'ipersuperficie 3D. Il film intero è lo spazio-tempo 4D. Il formalismo ADM descrive come si passa da un fotogramma al successivo.
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">I tre parametri chiave</div>
+        <p class="panel-text"><strong style="color:#00d4ff">α (lapse)</strong> — dice quanto "velocemente scorre il tempo" tra due ipersuperfici vicine. Alcubierre lo fissa a 1: il tempo scorre normalmente.</p>
+        <p class="panel-text" style="margin-top:8px"><strong style="color:#ff8c00">βⁱ (shift)</strong> — descrive come le coordinate spaziali cambiano tra un'ipersuperficie e la successiva. È qui che Alcubierre nasconde il trucco: βˣ = −vₛ(t)f(rₛ) trascina lo spazio nella direzione del moto.</p>
+        <p class="panel-text" style="margin-top:8px"><strong style="color:#bf5fff">γᵢⱼ (metrica 3D)</strong> — misura distanze e angoli sulla singola ipersuperficie. Alcubierre usa la metrica piatta: γᵢⱼ = δᵢⱼ.</p>
+      </div>
+    `
+  },
+  wec:{
+    tag:'Fisica Quantistica',
+    title:'Weak Energy Condition',
+    hasCanvas:false,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Cosa dice la WEC?</div>
+        <p class="panel-text">La <strong>Weak Energy Condition</strong> è uno dei principi fondamentali della fisica classica: qualsiasi osservatore fisico (che si muova a v < c) deve misurare una densità di energia <em>non negativa</em>. In altre parole, non può esistere materia con energia negativa.</p>
+      </div>
+      <div class="panel-highlight">
+        ρ ≥ 0  per ogni osservatore subluminale.<br><br>
+        Con il warp drive: ρ &lt; 0 — violazione diretta.
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Perché è un problema?</div>
+        <p class="panel-text">L'energia negativa non è stata mai osservata in quantità macroscopiche. Piccole violazioni esistono nella meccanica quantistica — l'<strong>effetto Casimir</strong> produce fluttuazioni del vuoto con energia negativa — ma le quantità necessarie per il warp drive sono assurde: secondo alcune stime, equivalenti alla massa-energia di Giove con segno negativo.</p>
+        <p class="panel-text" style="margin-top:12px">È lo stesso problema che affligge i wormhole: anche lì serve materia esotica con WEC violata per tenere aperto il tunnel spazio-temporale.</p>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">C'è speranza?</div>
+        <p class="panel-text">Alcuni fisici, come Harold White della NASA, hanno proposto varianti della metrica di Alcubierre che riducono drasticamente il fabbisogno energetico. La ricerca è ancora aperta — e affascinante.</p>
+      </div>
+    `
+  },
+  metrica:{
+    tag:'La formula centrale',
+    title:'La metrica spiegata',
+    hasCanvas:false,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Cos'è una metrica?</div>
+        <p class="panel-text">In Relatività Generale, una <strong>metrica</strong> è una formula che descrive la geometria dello spazio-tempo: come misurare distanze, angoli e intervalli temporali in un dato punto. La metrica di Alcubierre descrive la geometria attorno alla bolla warp.</p>
+      </div>
+      <div class="panel-highlight" style="font-size:13px;line-height:2.2;">
+        ds² = −c²dt² + (dx − v<sub>s</sub>(t)f(r<sub>s</sub>)dt)² + dy² + dz²
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Termine per termine</div>
+        <p class="panel-text"><strong style="color:#00d4ff">ds²</strong> — l'intervallo spazio-temporale. Se ds² &lt; 0 è un intervallo di tipo tempo (percorribile da materia), se ds² = 0 è la traiettoria della luce.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#00d4ff">−c²dt²</strong> — il contributo temporale. Il segno negativo è la firma della Relatività: il tempo e lo spazio hanno "segni opposti" nella metrica.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#ff2d78">(dx − v<sub>s</sub>(t)f(r<sub>s</sub>)dt)²</strong> — il cuore del warp drive. Il termine <strong>v<sub>s</sub>(t)</strong> è la velocità della bolla, <strong>f(r<sub>s</sub>)</strong> è la funzione di forma che vale 1 dentro la bolla e 0 fuori. Questo termine "trascina" le coordinate spaziali con la bolla.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#00d4ff">dy² + dz²</strong> — le direzioni perpendicolari al moto rimangono piatte, non deformate.</p>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">La funzione f(r<sub>s</sub>)</div>
+        <p class="panel-text">È una combinazione di tangenti iperboliche che crea una transizione netta tra l'interno della bolla (f = 1) e l'esterno (f = 0). Per valori grandi del parametro σ, diventa quasi una funzione gradino — la bolla ha un bordo ben definito.</p>
+        <div class="panel-highlight">
+          f(r<sub>s</sub>) = [tanh(σ(r<sub>s</sub> + R)) − tanh(σ(r<sub>s</sub> − R))] / 2tanh(σR)
+        </div>
+        <p class="panel-text">Dentro la bolla la nave è in caduta libera — nessuna forza, nessuna accelerazione. È come essere in orbita, ma il "pianeta" attorno a cui si orbita è lo spazio-tempo stesso che si muove.</p>
+      </div>
+    `
+  },
+  'metrica-adm':{
+    tag:'Formalismo ADM',
+    title:'La metrica ADM',
+    hasCanvas:false,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Perché questa forma?</div>
+        <p class="panel-text">La metrica ADM è la forma più generale possibile per descrivere uno spazio-tempo che si evolve nel tempo. Ogni termine ha un significato fisico preciso, legato ai tre parametri α, βⁱ e γᵢⱼ.</p>
+      </div>
+      <div class="panel-highlight" style="font-size:12px;line-height:2.2;">
+        ds² = −(α² − βᵢβⁱ)dt² + 2βᵢdxⁱdt + γᵢⱼdxⁱdxʲ
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Termine per termine</div>
+        <p class="panel-text"><strong style="color:#bf5fff">−(α² − βᵢβⁱ)dt²</strong> — il termine temporale modificato. α² è il contributo puro del lapse; βᵢβⁱ è la correzione dovuta allo shift, cioè a quanto le coordinate spaziali "scivolano" nel tempo. Se β = 0 e α = 1 si riduce al caso piatto.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#ff8c00">2βᵢdxⁱdt</strong> — il termine di accoppiamento spazio-tempo. È qui che appare lo shift vector βⁱ: descrive come spazio e tempo si "mischiano" tra un'ipersuperficie e la successiva. Alcubierre impone βˣ = −vₛ(t)f(rₛ): questo termine è il motore del warp drive.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#00d4ff">γᵢⱼdxⁱdxʲ</strong> — la metrica puramente spaziale su ogni ipersuperficie. Alcubierre usa γᵢⱼ = δᵢⱼ (metrica piatta): all'interno di ogni "fetta" temporale, lo spazio è euclideo.</p>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Come si ottiene la metrica di Alcubierre?</div>
+        <p class="panel-text">Sostituendo α = 1, βˣ = −vₛ(t)f(rₛ), βʸ = βᶻ = 0 e γᵢⱼ = δᵢⱼ nella forma ADM generale, si ottiene direttamente la metrica di Alcubierre. Il formalismo ADM è quindi lo strumento che permette di "costruire" geometrie su misura partendo da condizioni fisiche specifiche.</p>
+      </div>
+    `
+  },
+  'densita-energia':{
+    tag:'Il problema fondamentale',
+    title:'Densità di energia',
+    hasCanvas:false,
+    content:`
+      <div class="panel-section">
+        <div class="panel-section-title">Da dove viene questa formula?</div>
+        <p class="panel-text">Alcubierre calcola il tensore energia-impulso T<sub>μν</sub> usando le equazioni di campo di Einstein: G<sub>μν</sub> = 8πT<sub>μν</sub>. Contraendo opportunamente con il quadrivettore velocità degli osservatori euleriani (quelli fermi rispetto alle ipersuperfici), ottiene la densità di energia misurata localmente.</p>
+      </div>
+      <div class="panel-highlight" style="font-size:12px;line-height:2.2;">
+        ρ = − (1/8π) · v²ₛ(t) · ρ²(y,z) · (df/dr<sub>s</sub>)²/r<sub>s</sub>² &lt; 0
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Termine per termine</div>
+        <p class="panel-text"><strong style="color:#ff2d78">− (1/8π)</strong> — il segno negativo davanti è cruciale: viene direttamente dalla struttura delle equazioni di Einstein applicate a questa geometria. Non è un artificio — è il risultato inevitabile del calcolo.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#00d4ff">v²ₛ(t)</strong> — il quadrato della velocità della bolla. Più veloce va la bolla, più grande (in valore assoluto) è l'energia negativa richiesta. Non c'è scampo: aumentare la velocità peggiora il problema.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#00d4ff">ρ²(y,z)</strong> — dipende dalla distanza dall'asse di moto. L'energia negativa è distribuita attorno alla bolla, non concentrata in un punto.</p>
+        <p class="panel-text" style="margin-top:10px"><strong style="color:#ff8c00">(df/dr<sub>s</sub>)²/r<sub>s</sub>²</strong> — la derivata della funzione di forma. È massima sul bordo della bolla, dove la curvatura cambia più rapidamente. È lì che si concentra la richiesta di energia negativa.</p>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Perché è insuperabile?</div>
+        <p class="panel-text">Ogni termine è positivo tranne il segno iniziale. Non c'è modo di far diventare ρ positivo modificando i parametri — la negatività è strutturale, non accidentale. È il prezzo matematicamente inevitabile per piegare lo spazio-tempo in questo modo.</p>
+      </div>
+    `
+  }
+};
+
+function openPanel(key){
+  const data=TIPS[key];
+  if(!data)return;
+  panelTag.textContent=data.tag;
+  panelTitle.textContent=data.title;
+  panelBody.innerHTML=data.content;
+  if(data.hasCanvas && data.drawFn){
+    panelCanvasWrap.style.display='block';
+    if(panelAnimId){cancelAnimationFrame(panelAnimId);panelAnimId=null;}
+    data.drawFn();
+  } else {
+    panelCanvasWrap.style.display='none';
+    if(panelAnimId){cancelAnimationFrame(panelAnimId);panelAnimId=null;}
+  }
+  overlay.classList.add('open');
+  panel.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closePanel(){
+  overlay.classList.remove('open');
+  panel.classList.remove('open');
+  document.body.style.overflow='';
+  if(panelAnimId){cancelAnimationFrame(panelAnimId);panelAnimId=null;}
+}
+
+panelClose.addEventListener('click',closePanel);
+overlay.addEventListener('click',closePanel);
+document.querySelectorAll('.tip').forEach(el=>{
+  el.addEventListener('click',e=>{
+    e.stopPropagation();
+    openPanel(el.dataset.tip);
+  });
+});
+
+// ─── PANEL MINI-ANIMATIONS ───────────────────────────────
+function drawPanelCone(){
+  const c=panelCanvas,ctx=c.getContext('2d');
+  const W=c.width,H=c.height,cx=W/2,cy=H*0.55;
+  let t=0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#000c18';ctx.fillRect(0,0,W,H);
+    const maxR=130;
+    // past
+    for(let r=15;r<=maxR;r+=15){
+      ctx.beginPath();ctx.ellipse(cx,cy+r*0.4,r,r*0.15,0,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,80,180,${0.05*(1-r/maxR)})`;ctx.fill();
+    }
+    // future
+    for(let r=15;r<=maxR;r+=15){
+      ctx.beginPath();ctx.ellipse(cx,cy-r*0.4,r,r*0.15,0,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,212,255,${0.06*(1-r/maxR)})`;ctx.fill();
+    }
+    ctx.strokeStyle='rgba(0,212,255,0.5)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx-maxR,cy-maxR*0.5);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+maxR,cy-maxR*0.5);ctx.stroke();
+    ctx.strokeStyle='rgba(0,80,180,0.4)';
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx-maxR,cy+maxR*0.5);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+maxR,cy+maxR*0.5);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+    // photon
+    const prog=(t%120)/120;
+    const px=cx+Math.cos(-Math.PI/4)*prog*maxR;
+    const py=cy-Math.sin(Math.PI/4)*prog*maxR;
+    ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);ctx.fillStyle='#ff0';ctx.fill();
+    ctx.font='10px "Share Tech Mono"';ctx.textAlign='center';
+    ctx.fillStyle='rgba(0,212,255,0.6)';ctx.fillText('FUTURO',cx,cy-maxR*0.55);
+    ctx.fillStyle='rgba(0,80,180,0.5)';ctx.fillText('PASSATO',cx,cy+maxR*0.6);
+    t++;panelAnimId=requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function drawPanelInflation(){
+  const c=panelCanvas,ctx=c.getContext('2d');
+  const W=c.width,H=c.height,cx=W/2,cy=H/2;
+  let t=0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#000c18';ctx.fillRect(0,0,W,H);
+    const expand=0.5+0.5*Math.sin(t*0.02);
+    const step=28;
+    const scale=1+expand*1.8;
+    ctx.save();ctx.globalAlpha=0.25;
+    for(let i=-6;i<=6;i++){
+      ctx.beginPath();ctx.moveTo(cx+i*step*scale,0);ctx.lineTo(cx+i*step*scale,H);
+      ctx.strokeStyle='rgba(0,80,140,1)';ctx.lineWidth=0.6;ctx.stroke();
+    }
+    for(let j=-4;j<=4;j++){
+      ctx.beginPath();ctx.moveTo(0,cy+j*step*scale);ctx.lineTo(W,cy+j*step*scale);ctx.stroke();
+    }
+    ctx.restore();
+    const r=20+expand*120;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(0,212,255,${0.7-expand*0.3})`;ctx.lineWidth=1.5;ctx.stroke();
+    const sp=expand*140;
+    ctx.beginPath();ctx.arc(cx-sp,cy,6,0,Math.PI*2);ctx.fillStyle='#ff8c00';ctx.fill();
+    ctx.beginPath();ctx.arc(cx+sp,cy,6,0,Math.PI*2);ctx.fillStyle='#39ff14';ctx.fill();
+    ctx.font='10px "Share Tech Mono"';ctx.textAlign='center';
+    ctx.fillStyle='rgba(255,45,120,0.7)';
+    if(sp>60){
+      ctx.beginPath();ctx.moveTo(cx-sp+10,cy-18);ctx.lineTo(cx+sp-10,cy-18);
+      ctx.strokeStyle='rgba(255,45,120,0.5)';ctx.lineWidth=1;ctx.stroke();
+      ctx.fillText('v > c',cx,cy-26);
+    }
+    t++;panelAnimId=requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function drawPanelADM(){
+  const c=panelCanvas,ctx=c.getContext('2d');
+  const W=c.width,H=c.height;
+  let t=0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#000c18';ctx.fillRect(0,0,W,H);
+    const n=4,sh=36,baseY=H-30;
+    for(let s=n-1;s>=0;s--){
+      const y=baseY-s*sh;
+      const warp=8*Math.sin(t*0.025+s*0.8);
+      const alpha=0.15+0.12*(n-s)/n;
+      ctx.beginPath();
+      ctx.moveTo(30,y+warp*0.3);
+      ctx.bezierCurveTo(140,y-14+warp,280,y+14-warp,390,y-warp*0.3);
+      ctx.lineTo(390,y+18-warp*0.3);
+      ctx.bezierCurveTo(280,y+32-warp,140,y+18+warp,30,y+18+warp*0.3);
+      ctx.closePath();
+      ctx.fillStyle=`rgba(0,60,120,${alpha})`;ctx.fill();
+      ctx.strokeStyle=`rgba(0,212,255,${alpha*2.5})`;ctx.lineWidth=0.8;ctx.stroke();
+      for(let gi=0;gi<4;gi++){
+        const gx=80+gi*90;
+        ctx.beginPath();ctx.moveTo(gx,y-12+warp*(gi/3-0.5));ctx.lineTo(gx,y+30+warp*(gi/3-0.5));
+        ctx.strokeStyle=`rgba(0,212,255,${alpha})`;ctx.lineWidth=0.4;ctx.stroke();
+      }
+      if(s<2){
+        ctx.font='10px "Share Tech Mono"';ctx.fillStyle='rgba(0,212,255,0.5)';
+        ctx.textAlign='left';ctx.fillText('Σ'+(n-s),32,y+12);
+      }
+    }
+    // lapse arrow
+    const y0=baseY,y1=baseY-sh;
+    ctx.beginPath();ctx.moveTo(210,y0-2);ctx.lineTo(210,y1+2);
+    ctx.strokeStyle='rgba(191,95,255,0.8)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.font='500 10px "Share Tech Mono"';ctx.fillStyle='rgba(191,95,255,0.9)';
+    ctx.textAlign='center';ctx.fillText('α',210,y1-6);
+    // shift arrow
+    const shiftX=14*Math.sin(t*0.03);
+    ctx.beginPath();ctx.moveTo(310,y0-2);ctx.lineTo(310+shiftX,y1+2);
+    ctx.strokeStyle='rgba(255,140,0,0.7)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.fillStyle='rgba(255,140,0,0.8)';ctx.fillText('βⁱ',310+shiftX,y1-6);
+    t++;panelAnimId=requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+// ─── GIOCO SEGRETO ───────────────────────────────────────
+const gameOverlay=document.getElementById('game-overlay');
+const gameCanvas=document.getElementById('game-canvas');
+const gCtx=gameCanvas.getContext('2d');
+const GW=640,GH=360;
+
+// STATO DI GIOCO
+let G={
+  year:2025, funds:50, level:1, research:0, stability:50, propulsion:30,
+  sigma:0.8, enemySigma:0.5, enemyProgress:0,
+  myX:60, enemyX:60, running:false, finished:false, animId:null, frameT:0,
+  allocResearch:20, allocStability:15, allocPropulsion:15,
+  news:[], nextNewsYear:2026
+};
+
+const LEVELS=[
+  {lvl:1, name:'Teoria', sigma:0.8,  speedC:0.94, researchNeeded:100, color:'rgba(0,212,255,1)'},
+  {lvl:2, name:'Prototipo', sigma:2.0, speedC:1.94, researchNeeded:200, color:'rgba(191,95,255,1)'},
+  {lvl:3, name:'Warp Drive', sigma:3.5, speedC:3.1,  researchNeeded:300, color:'rgba(57,255,20,1)'},
+];
+
+const NEWS_POOL=[
+  {year:2027, text:'🇨🇳 Cina: "Breakthrough nella simulazione della WEC"', severity:'warn'},
+  {year:2029, text:'🇷🇺 Russia finanzia laboratorio quantistico per materia esotica', severity:'info'},
+  {year:2031, text:'🇨🇳 Cina: prototipo di bolla di curvatura testato in laboratorio!', severity:'danger'},
+  {year:2033, text:'📰 ONU discute trattati sul warp drive', severity:'info'},
+  {year:2035, text:'🇨🇳 Cina lancia programma "Stella Rossa" — budget ×3', severity:'danger'},
+  {year:2038, text:'🇷🇺 Russia e Cina annunciano collaborazione warp', severity:'danger'},
+  {year:2041, text:'📡 Rilevata anomalia energetica negativa in laboratorio cinese', severity:'danger'},
+  {year:2044, text:'🇨🇳 Cina: "Il nostro prototipo ha raggiunto 0.5c"', severity:'danger'},
+];
+
+function sigToSpeedC(sig){ return 0.3+sig*0.8; }
+function sigToPx(sig){ return sigToSpeedC(sig)*3.2; }
+function enemySigToPx(){ return sigToSpeedC(G.enemySigma)*2.8; }
+
+function addNews(text, severity){
+  G.news.unshift({text, severity, year:G.year});
+  if(G.news.length>6) G.news.pop();
+  renderNews();
+}
+
+function renderNews(){
+  const el=document.getElementById('g-news');
+  if(!el)return;
+  el.innerHTML=G.news.map(n=>{
+    const col=n.severity==='danger'?'var(--neon-pink)':n.severity==='warn'?'var(--neon-orange)':'var(--dim)';
+    return `<div style="font-size:10px;color:${col};line-height:1.4;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);">${n.text}</div>`;
+  }).join('');
+}
+
+function updateHUD(){
+  const lv=LEVELS[G.level-1];
+  document.getElementById('g-year').textContent=G.year;
+  document.getElementById('g-funds').textContent='$'+G.funds+'B';
+  document.getElementById('g-level').textContent=G.level+' / 3';
+  document.getElementById('g-sigma').textContent=G.sigma.toFixed(1);
+  document.getElementById('g-speed').textContent=sigToSpeedC(G.sigma).toFixed(2)+'c';
+  const prog=Math.min(G.research/lv.researchNeeded*100,100);
+  document.getElementById('g-prog-pct').textContent=prog.toFixed(0)+'%';
+  document.getElementById('g-prog-bar').style.width=prog+'%';
+  // barre ricerca
+  const bars=document.getElementById('research-bars');
+  if(bars) bars.innerHTML=LEVELS.map(l=>{
+    const done=G.level>l.lvl;
+    const current=G.level===l.lvl;
+    const col=done?'var(--neon-green)':current?'var(--neon-blue)':'rgba(100,130,150,0.3)';
+    const pct=done?100:current?Math.min(G.research/l.researchNeeded*100,100):0;
+    return `<div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:${col};">LV${l.lvl} — ${l.name}</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:${col};">${done?'✓':current?pct.toFixed(0)+'%':'—'}</span>
+      </div>
+      <div style="height:3px;background:rgba(255,255,255,0.05);border-radius:2px;">
+        <div style="height:100%;width:${pct}%;background:${col};border-radius:2px;transition:width 0.4s;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAllocTotal(){
+  const tot=G.allocResearch+G.allocStability+G.allocPropulsion;
+  const el=document.getElementById('alloc-total');
+  if(el){ el.textContent='$'+tot+'B'; el.style.color=tot>50?'var(--neon-pink)':'#fff'; }
+}
+
+// Slider allocazione
+document.getElementById('alloc-research').oninput=e=>{
+  G.allocResearch=+e.target.value;
+  document.getElementById('alloc-research-v').textContent='$'+G.allocResearch+'B';
+  renderAllocTotal();
+};
+document.getElementById('alloc-stability').oninput=e=>{
+  G.allocStability=+e.target.value;
+  document.getElementById('alloc-stability-v').textContent='$'+G.allocStability+'B';
+  renderAllocTotal();
+};
+document.getElementById('alloc-propulsion').oninput=e=>{
+  G.allocPropulsion=+e.target.value;
+  document.getElementById('alloc-propulsion-v').textContent='$'+G.allocPropulsion+'B';
+  renderAllocTotal();
+};
+
+// ANNO SUCCESSIVO
+document.getElementById('g-next-year').onclick=()=>{
+  if(G.finished)return;
+  const tot=G.allocResearch+G.allocStability+G.allocPropulsion;
+  if(tot>50){
+    document.getElementById('game-msg').innerHTML='<span style="color:var(--neon-pink)">⚠ Hai allocato $'+tot+'B ma il budget è $50B. Riduci.</span>';
+    return;
+  }
+  G.year++;
+  G.funds=50; // budget annuale fisso
+
+  // applica ricerca
+  const researchGain=G.allocResearch*0.8+(Math.random()*10-5);
+  G.research+=Math.max(0,researchGain);
+
+  // stabilità bolla (riduce instabilità)
+  G.stability=Math.min(100, G.stability+G.allocStability*0.5);
+
+  // propulsione aumenta velocità di movimento in simulazione
+  G.propulsion=Math.min(100, G.propulsion+G.allocPropulsion*0.3);
+
+  // controlla sblocco livello
+  const lv=LEVELS[G.level-1];
+  if(G.research>=lv.researchNeeded && G.level<3){
+    G.level++;
+    G.research=0;
+    G.sigma=LEVELS[G.level-1].sigma;
+    const newLv=LEVELS[G.level-1];
+    addNews(`🎉 BREAKTHROUGH LV${G.level}: ${newLv.name} sbloccato! σ = ${newLv.sigma}`, 'info');
+    document.getElementById('game-msg').innerHTML=
+      `<span style="color:var(--neon-green)">✓ LIVELLO ${G.level} SBLOCCATO — ${newLv.name}! Velocità: ${newLv.speedC}c</span>`;
+  } else if(G.research>=lv.researchNeeded && G.level===3){
+    G.sigma=LEVELS[2].sigma;
+    document.getElementById('game-msg').innerHTML=
+      `<span style="color:var(--neon-green)">Ricerca completata. Avvia la missione!</span>`;
+  } else {
+    document.getElementById('game-msg').textContent=
+      `Anno ${G.year} — Ricerca: +${researchGain.toFixed(0)} punti | Progresso: ${Math.min(G.research,lv.researchNeeded).toFixed(0)}/${lv.researchNeeded}`;
+  }
+
+  // avversario progredisce
+  G.enemyProgress+=12+Math.random()*8;
+  G.enemySigma=Math.min(3.5, 0.3+G.enemyProgress/80);
+
+  // news
+  const news=NEWS_POOL.find(n=>n.year===G.year);
+  if(news) addNews(news.text, news.severity);
+
+  // avversario sblocca livelli
+  if(G.enemySigma>2.0 && G.year>2035){
+    addNews('🇨🇳 Cina: warp drive operativo — σ = '+G.enemySigma.toFixed(1),'danger');
+  }
+
+  updateHUD();
+  drawGame();
+
+  // avvia simulazione automaticamente se livello 3
+  if(G.level===3 && !G.running && !G.finished){
+    document.getElementById('game-msg').innerHTML+=' &nbsp;<span style="color:var(--neon-blue)">→ Premi LANCIA per la missione finale!</span>';
+  }
+};
+
+// LANCIA MISSIONE (appare solo al lv3)
+function checkLaunchBtn(){
+  const box=document.getElementById('g-allocate-box');
+  if(!box)return;
+  if(G.level===3 && !G.running && !G.finished){
+    if(!document.getElementById('g-launch')){
+      const btn=document.createElement('button');
+      btn.id='g-launch';
+      btn.textContent='🚀 LANCIA MISSIONE';
+      btn.style.cssText='margin-top:8px;width:100%;font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px;background:rgba(57,255,20,0.15);border:1px solid rgba(57,255,20,0.6);color:var(--neon-green);border-radius:3px;cursor:pointer;';
+      btn.onclick=startMission;
+      box.appendChild(btn);
+    }
+  }
+}
+
+function startMission(){
+  G.running=true;G.myX=60;G.enemyX=60;G.frameT=0;
+  document.getElementById('game-msg').innerHTML='<span style="color:var(--neon-blue)">Missione avviata! La bolla warp si espande...</span>';
+  if(G.animId)cancelAnimationFrame(G.animId);
+  runMission();
+}
+
+const DEST=580;
+function runMission(){
+  if(!G.running)return;
+  // velocità in pixel/frame
+  const myPx=sigToPx(G.sigma)*(0.7+G.propulsion/300);
+  const enPx=enemySigToPx()*(0.8+G.enemyProgress/500);
+  G.myX=Math.min(G.myX+myPx, DEST);
+  G.enemyX=Math.min(G.enemyX+enPx, DEST);
+  G.frameT++;
+
+  const myDone=G.myX>=DEST;
+  const enDone=G.enemyX>=DEST;
+
+  if(myDone||enDone){
+    G.running=false;G.finished=true;
+    if(myDone&&!enDone){
+      document.getElementById('game-msg').innerHTML=
+        '<span style="color:var(--neon-green)">🏆 HAI VINTO! La tua nave warp è arrivata prima. L\'umanità ha il suo motore a curvatura.</span>';
+      addNews('🏆 Italia prima al mondo: warp drive completato!','info');
+    } else if(enDone&&!myDone){
+      document.getElementById('game-msg').innerHTML=
+        '<span style="color:var(--neon-pink)">❌ La Cina ha vinto la corsa. Investi di più nella ricerca al prossimo tentativo.</span>';
+      addNews('🇨🇳 Cina: prima nazione con warp drive operativo.','danger');
+    } else {
+      document.getElementById('game-msg').innerHTML=
+        '<span style="color:var(--neon-orange)">⚡ Pareggio! Entrambe le nazioni arrivano simultaneamente.</span>';
+    }
+    drawGame();return;
+  }
+
+  drawGame();
+  G.animId=requestAnimationFrame(runMission);
+}
+
+function drawGame(){
+  gCtx.clearRect(0,0,GW,GH);
+  gCtx.fillStyle='#000c18';gCtx.fillRect(0,0,GW,GH);
+
+  // stelle
+  for(let i=0;i<50;i++){
+    const sx=(i*137.5)%GW,sy=(i*97.3)%GH;
+    gCtx.beginPath();gCtx.arc(sx,sy,0.5+(i%3)*0.3,0,Math.PI*2);
+    gCtx.fillStyle=`rgba(180,210,255,${0.15+0.3*(i%3)/3})`;gCtx.fill();
+  }
+
+  // traguardo
+  gCtx.beginPath();gCtx.moveTo(DEST,20);gCtx.lineTo(DEST,GH-20);
+  gCtx.strokeStyle='rgba(57,255,20,0.3)';gCtx.lineWidth=1;gCtx.setLineDash([5,4]);gCtx.stroke();gCtx.setLineDash([]);
+  gCtx.font='9px "Share Tech Mono"';gCtx.fillStyle='rgba(57,255,20,0.5)';gCtx.textAlign='center';
+  gCtx.fillText('DESTINAZIONE',DEST,14);
+
+  // partenza
+  gCtx.beginPath();gCtx.moveTo(60,20);gCtx.lineTo(60,GH-20);
+  gCtx.strokeStyle='rgba(100,130,150,0.15)';gCtx.lineWidth=1;gCtx.setLineDash([4,4]);gCtx.stroke();gCtx.setLineDash([]);
+
+  const cy1=110; // corsia mia
+  const cy2=250; // corsia nemica
+
+  // ── CORSIA MIA ──────────────────────────────────────────
+  const lv=LEVELS[G.level-1];
+  gCtx.font='9px "Share Tech Mono"';gCtx.fillStyle='rgba(0,212,255,0.6)';gCtx.textAlign='left';
+  gCtx.fillText('🇮🇹 ITALIA — LV'+G.level+' '+lv.name+' — σ='+G.sigma.toFixed(1)+' — '+sigToSpeedC(G.sigma).toFixed(2)+'c',62,cy1-28);
+
+  // progress bar corsia
+  const myPct=(G.myX-60)/(DEST-60);
+  gCtx.fillStyle='rgba(0,212,255,0.08)';gCtx.fillRect(60,cy1-10,DEST-60,20);
+  gCtx.fillStyle='rgba(0,212,255,0.15)';gCtx.fillRect(60,cy1-10,(DEST-60)*myPct,20);
+
+  // bolla warp attorno alla mia nave
+  if(G.level>=2||G.running){
+    const bR=30+G.sigma*4;
+    const pulse=1+0.04*Math.sin(G.frameT*0.12);
+    gCtx.beginPath();gCtx.ellipse(G.myX,cy1,bR*pulse,bR*0.5*pulse,0,0,Math.PI*2);
+    gCtx.strokeStyle=`rgba(0,212,255,${0.3+G.level*0.1})`;gCtx.lineWidth=1;gCtx.stroke();
+    // glow
+    const bg=gCtx.createRadialGradient(G.myX,cy1,0,G.myX,cy1,bR*1.2);
+    bg.addColorStop(0,'rgba(0,212,255,0.06)');bg.addColorStop(1,'rgba(0,212,255,0)');
+    gCtx.beginPath();gCtx.ellipse(G.myX,cy1,bR*pulse,bR*0.5*pulse,0,0,Math.PI*2);
+    gCtx.fillStyle=bg;gCtx.fill();
+  }
+  // scia
+  if(G.myX>62){
+    const sg=gCtx.createLinearGradient(60,0,G.myX,0);
+    sg.addColorStop(0,'rgba(0,212,255,0)');sg.addColorStop(1,'rgba(0,212,255,0.1)');
+    gCtx.fillStyle=sg;gCtx.fillRect(60,cy1-4,G.myX-60,8);
+  }
+  // mia nave
+  gCtx.save();gCtx.translate(G.myX,cy1);
+  gCtx.beginPath();gCtx.moveTo(18,0);gCtx.lineTo(-12,-6);gCtx.lineTo(-7,0);gCtx.lineTo(-12,6);gCtx.closePath();
+  gCtx.fillStyle='rgba(180,220,255,0.95)';gCtx.fill();
+  gCtx.restore();
+
+  // ── CORSIA NEMICA ─────────────────────────────────────
+  gCtx.font='9px "Share Tech Mono"';gCtx.fillStyle='rgba(255,45,120,0.6)';gCtx.textAlign='left';
+  gCtx.fillText('🇨🇳 CINA — σ='+G.enemySigma.toFixed(1)+' — '+sigToSpeedC(G.enemySigma).toFixed(2)+'c',62,cy2-28);
+
+  const enPct=(G.enemyX-60)/(DEST-60);
+  gCtx.fillStyle='rgba(255,45,120,0.05)';gCtx.fillRect(60,cy2-10,DEST-60,20);
+  gCtx.fillStyle='rgba(255,45,120,0.1)';gCtx.fillRect(60,cy2-10,(DEST-60)*enPct,20);
+
+  // bolla nemica
+  if(G.enemySigma>0.8){
+    const bR=20+G.enemySigma*4;
+    gCtx.beginPath();gCtx.ellipse(G.enemyX,cy2,bR,bR*0.45,0,0,Math.PI*2);
+    gCtx.strokeStyle='rgba(255,45,120,0.25)';gCtx.lineWidth=0.8;gCtx.stroke();
+  }
+  // scia nemica
+  if(G.enemyX>62){
+    const eg=gCtx.createLinearGradient(60,0,G.enemyX,0);
+    eg.addColorStop(0,'rgba(255,45,120,0)');eg.addColorStop(1,'rgba(255,45,120,0.08)');
+    gCtx.fillStyle=eg;gCtx.fillRect(60,cy2-4,G.enemyX-60,8);
+  }
+  // nave nemica
+  gCtx.save();gCtx.translate(G.enemyX,cy2);
+  gCtx.beginPath();gCtx.moveTo(18,0);gCtx.lineTo(-12,-6);gCtx.lineTo(-7,0);gCtx.lineTo(-12,6);gCtx.closePath();
+  gCtx.fillStyle='rgba(255,80,100,0.9)';gCtx.fill();
+  gCtx.restore();
+
+  // vantaggio / ritardo
+  if(G.running||G.finished){
+    const diff=G.myX-G.enemyX;
+    const col=diff>0?'var(--neon-green)':'var(--neon-pink)';
+    const label=diff>0?'+'+diff.toFixed(0)+'px avanti':diff.toFixed(0)+'px indietro';
+    gCtx.font='10px "Share Tech Mono"';gCtx.fillStyle=col;gCtx.textAlign='center';
+    gCtx.fillText(label,GW/2,GH-16);
+  }
+
+  // etichette arrivo
+  if(G.myX>=DEST){
+    gCtx.font='bold 11px "Share Tech Mono"';gCtx.fillStyle='rgba(57,255,20,0.9)';
+    gCtx.textAlign='right';gCtx.fillText('✓ ARRIVATA',DEST-6,cy1+18);
+  }
+  if(G.enemyX>=DEST){
+    gCtx.font='bold 11px "Share Tech Mono"';gCtx.fillStyle='rgba(255,45,120,0.9)';
+    gCtx.textAlign='right';gCtx.fillText('✓ ARRIVATA',DEST-6,cy2+18);
+  }
+
+  // istruzione iniziale
+  if(!G.running&&!G.finished&&G.myX<=62){
+    gCtx.font='11px "Share Tech Mono"';gCtx.fillStyle='rgba(0,212,255,0.35)';gCtx.textAlign='center';
+    gCtx.fillText('← Alloca i fondi e premi "Anno successivo" per avanzare nella ricerca',GW/2,GH/2);
+  }
+
+  checkLaunchBtn();
+}
+
+function resetGame(){
+  if(G.animId)cancelAnimationFrame(G.animId);
+  G={year:2025,funds:50,level:1,research:0,stability:50,propulsion:30,
+     sigma:0.8,enemySigma:0.5,enemyProgress:0,
+     myX:60,enemyX:60,running:false,finished:false,animId:null,frameT:0,
+     allocResearch:20,allocStability:15,allocPropulsion:15,
+     news:[],nextNewsYear:2026};
+  const lb=document.getElementById('g-launch');if(lb)lb.remove();
+  document.getElementById('game-msg').textContent='Alloca i fondi annuali e premi "Anno successivo" per avanzare nella ricerca.';
+  document.getElementById('alloc-research').value=20;
+  document.getElementById('alloc-stability').value=15;
+  document.getElementById('alloc-propulsion').value=15;
+  document.getElementById('alloc-research-v').textContent='$20B';
+  document.getElementById('alloc-stability-v').textContent='$15B';
+  document.getElementById('alloc-propulsion-v').textContent='$15B';
+  renderAllocTotal();
+  addNews('📋 Anno 2025 — La corsa al warp drive è iniziata.','info');
+  updateHUD();drawGame();
+}
+
+document.getElementById('secret-btn').onclick=()=>{
+  gameOverlay.style.display='block';
+  resetGame();
+};
+document.getElementById('game-close').onclick=()=>{
+  gameOverlay.style.display='none';
+  if(G.animId){cancelAnimationFrame(G.animId);G.animId=null;}
+  G.running=false;
+};
+document.getElementById('game-reset').onclick=resetGame;
+</script>
+</script>
+</body>
+</html>
